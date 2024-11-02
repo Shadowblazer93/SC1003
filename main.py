@@ -1,14 +1,10 @@
-# TODO
-# add fallback if no desirable students left
-# optimize fetch function to only run student loop once by storing values in lists
-# choose majority gender as first teammates
-
 # config
 school = ['CCDS', 'EEE', 'CoB (NBS)', 'SoH', 'WKW SCI', 'CoE', 'MAE', 'SPMS', 'SBS', 'SSS', 'ASE', 'NIE', 'ADM', 'CCEB', 'MSE', 'LKCMedicine', 'CEE', 'HASS']
 team_size = 5
-stat_gender = 3
-stat_school = 2
-stat_cgpa_tolerance = 0.5
+#stat_gender = 3
+#stat_school = 2
+#stat_cgpa_tolerance = 0.5
+toggle_cgpa = 0
 
 # open and copy records
 fp = open('records.csv','r')
@@ -19,6 +15,10 @@ fo = open('output.csv','w')
 
 # fetch desirable student from the tutorial group
 def fetch_std(tut,gender='MaleFemale',schools=[]):
+    global toggle_cgpa
+    toggle_cgpa = (toggle_cgpa+1)%2 # switch between 0 and 1
+    if toggle_cgpa: tut = tut[::-1] # reverse tut group every other run
+
     gnd, sch = [], []
     for std in tut:
         if std[4] in gender and std[2] not in schools: return std
@@ -37,12 +37,18 @@ for tut in tuts:
         else: f_tut += 1
 
     while tut:
-        # TODO : Implement 3 of majority gender first, with two of them from the right end of tut
-        team = [tut[0],tut[-1]]
-        tut = tut[1:-1]
+        if len(tut)<team_size: break
+
         m = f = 0
         cgpa = 0
         schools = {i:0 for i in school}
+
+        team = []
+        for i in range(2):
+            if m_tut>f_tut: k = fetch_std(tut,gender='Female')
+            else: k = fetch_std(tut,gender='Male')
+            team.append(k)
+            tut.remove(k)
 
         # fetch and append
         while len(team)<team_size:
@@ -55,7 +61,7 @@ for tut in tuts:
                 # cgpa
                 cgpa += float(std[5])
 
-            school_bl = [i for i in schools if schools[i]>2]
+            school_bl = [i for i in schools if schools[i]>1]
 
             if m>3: team.append(fetch_std(tut,gender='Female',schools=school_bl))
             elif f>3: team.append(fetch_std(tut,gender='Male',schools=school_bl))
