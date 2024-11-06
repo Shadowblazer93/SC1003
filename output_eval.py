@@ -2,7 +2,7 @@ school = ['CCDS', 'EEE', 'CoB (NBS)', 'SoH', 'WKW SCI', 'CoE', 'MAE', 'SPMS', 'S
 team_size = 5
 
 fp = open("output.csv","r")
-pool = [i.replace('\n','').split(',') for i in fp.readlines() if i!='\n']
+pool = [i.replace('\n','').split(',') for i in fp.readlines()][1:]
 
 # bad teams counters
 flag_mf = 0

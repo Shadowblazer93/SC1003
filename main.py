@@ -5,6 +5,7 @@ team_size = 5
 #stat_school = 2
 #stat_cgpa_tolerance = 0.5
 toggle_cgpa = 0
+team_no = 0
 
 # open and copy records
 fp = open('records.csv','r')
@@ -12,6 +13,7 @@ pool = [i.replace('\n','').split(',') for i in fp.readlines()][1:]
 tuts = [sorted(pool[i:i+50], key = lambda x: x[5]) for i in range(0,len(pool),50)]
 fp.close()
 fo = open('output.csv','w')
+fo.write('Tutorial Group,Student ID,School,Name,Gender,CGPA,Team Assigned\n')
 
 # fetch desirable student from the tutorial group
 def fetch_std(tut,gender='MaleFemale',schools=[]):
@@ -44,6 +46,7 @@ for tut in tuts:
         schools = {i:0 for i in school}
 
         team = []
+        team_no += 1
         for i in range(2):
             if m_tut>f_tut: k = fetch_std(tut,gender='Female')
             else: k = fetch_std(tut,gender='Male')
@@ -71,7 +74,9 @@ for tut in tuts:
             for k in team:
                 if k in tut: tut.remove(k)
 
-        for i in team: fo.write(','.join(i)+'\n')
-        fo.write('\n')
+        for i in team:
+            i.append(str(team_no))
+            fo.write(','.join(i)+'\n')
+        #fo.write('\n')
         
 fo.close()
