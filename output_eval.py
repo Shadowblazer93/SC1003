@@ -29,7 +29,7 @@ for i in range(0,len(pool),5):
     
     school_bl = [i for i in schools if schools[i]>3]
 
-    if m>3 or f>3:
+    if m==4 or f==4:
         flag_mf += 1
         for k in team: print(k)
         print('\n')

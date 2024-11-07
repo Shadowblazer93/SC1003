@@ -1,11 +1,10 @@
-# config
 school = ['CCDS', 'EEE', 'CoB (NBS)', 'SoH', 'WKW SCI', 'CoE', 'MAE', 'SPMS', 'SBS', 'SSS', 'ASE', 'NIE', 'ADM', 'CCEB', 'MSE', 'LKCMedicine', 'CEE', 'HASS']
+
+# config
 team_size = 5
-#stat_gender = 3
-#stat_school = 2
-#stat_cgpa_tolerance = 0.5
 toggle_cgpa = 0
 team_no = 0
+
 
 # open and copy records
 fp = open('records.csv','r')
@@ -14,6 +13,7 @@ tuts = [sorted(pool[i:i+50], key = lambda x: x[5]) for i in range(0,len(pool),50
 fp.close()
 fo = open('output.csv','w')
 fo.write('Tutorial Group,Student ID,School,Name,Gender,CGPA,Team Assigned\n')
+
 
 # fetch desirable student from the tutorial group
 def fetch_std(tut,gender='MaleFemale',schools=[]):
@@ -30,41 +30,38 @@ def fetch_std(tut,gender='MaleFemale',schools=[]):
     elif sch: return sch[0]
     else: return tut[0]
 
+
 # for each tutorial group
 for tut in tuts:
-    # prioritize three of majority gender
-    m_tut = f_tut = 0
-    for std in tut:
-        if std[4]=='Male': m_tut += 1
-        else: f_tut += 1
-
     while tut:
-        if len(tut)<team_size: break
+        # prioritize three of majority gender
+        m_tut = f_tut = 0
+        for std in tut:
+            if std[4]=='Male': m_tut += 1
+            else: f_tut += 1
 
+        if len(tut)<team_size: break
         m = f = 0
         cgpa = 0
         schools = {i:0 for i in school}
-
         team = []
         team_no += 1
-        for i in range(2):
+
+        # append minority gender to team
+        for i in range(team_size//2):
             if m_tut>f_tut: k = fetch_std(tut,gender='Female')
             else: k = fetch_std(tut,gender='Male')
             team.append(k)
             tut.remove(k)
 
-        # fetch and append
+        # fetch and append to team
         while len(team)<team_size:
             for std in team:
-                # school
-                schools[std[2]] += 1
-                # gender
-                if std[4]=='Male': m+=1
+                schools[std[2]] += 1 # school
+                if std[4]=='Male': m+=1 # gender
                 else: f+=1
-                # cgpa
-                cgpa += float(std[5])
-
-            school_bl = [i for i in schools if schools[i]>1]
+                cgpa += float(std[5]) # cgpa
+            school_bl = [i for i in schools if schools[i]>team_size//2-1] # blacklist schols with 2+ members
 
             if m>3: team.append(fetch_std(tut,gender='Female',schools=school_bl))
             elif f>3: team.append(fetch_std(tut,gender='Male',schools=school_bl))
@@ -77,6 +74,5 @@ for tut in tuts:
         for i in team:
             i.append(str(team_no))
             fo.write(','.join(i)+'\n')
-        #fo.write('\n')
         
 fo.close()
