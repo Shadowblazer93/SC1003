@@ -6,8 +6,8 @@ school = ['CCDS', 'EEE', 'CoB (NBS)', 'SoH', 'WKW SCI',
 
 # take team size input
 while True:
-    team_size_input = int(input("Enter team size : "))
-    if team_size_input > 10: print("Please enter a team size in [1,10]")
+    team_size_input = int(input("Enter team size [4-10] : "))
+    if team_size_input not in range(1,11): print("Please enter a team size in [1,10]")
     else: break
 
 # open and copy records
