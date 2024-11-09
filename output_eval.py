@@ -3,6 +3,7 @@ team_size = 5
 
 fp = open("output.csv","r")
 pool = [i.replace('\n','').split(',') for i in fp.readlines()][1:]
+tuts = [sorted(pool[i:i+50], key = lambda x:x[5]) for i in range(0,len(pool),50)] # 2D list of all students sorted by cgpa
 
 # bad teams counters
 flag_mf = 0
@@ -10,10 +11,12 @@ flag_gpa = 0
 flag_sch = 0
 teams = 0
 g5 = 0
+team_sizes = {i:0 for i in range(1,11)}
 
 for i in range(0,len(pool),5):
     team = pool[i:i+team_size]
     teams += 1
+    team_sizes[len(team)] += 1
     m = f = 0
     cgpa = 0
     schools = {i:0 for i in school}
@@ -45,3 +48,4 @@ print("Teams with undesirable gender ratios (4+ of same gender) : ",flag_mf)
 print("Teams with five of the same gender : ",g5)
 print("Teams with undesirable school ratios (4+ from same school) : ",flag_sch)
 print("Total teams : ",teams)
+print("Team Sizes : ",team_sizes)
