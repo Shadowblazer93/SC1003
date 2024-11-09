@@ -13,7 +13,7 @@ teams = 0
 g5 = 0
 team_sizes = {i:0 for i in range(1,11)}
 
-for i in range(0,len(pool),5):
+for i in range(0,len(pool),team_size):
     team = pool[i:i+team_size]
     teams += 1
     team_sizes[len(team)] += 1

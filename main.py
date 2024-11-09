@@ -4,8 +4,11 @@ school = ['CCDS', 'EEE', 'CoB (NBS)', 'SoH', 'WKW SCI',
           'ADM', 'CCEB', 'MSE', 'LKCMedicine', 'CEE', 'HASS']
 
 
-# config
-team_size_input = int(input("Enter team size : "))
+# take team size input
+while True:
+    team_size_input = int(input("Enter team size : "))
+    if team_size_input > 10: print("Please enter a team size in [1,10]")
+    else: break
 
 # open and copy records
 with open('records.csv','r') as records:
@@ -39,6 +42,7 @@ for tut_grp in tuts:
     extra_members = 50 % team_size_input
 
     while tut_grp:
+        # account for irregular team members (for team size != 5)
         team_size = team_size_input
         if extra_members:
             team_size += 1
